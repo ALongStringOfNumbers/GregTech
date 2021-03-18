@@ -37,7 +37,6 @@ public class MetaTileEntityTESR extends TileEntitySpecialRenderer<MetaTileEntity
             ((IRenderMetaTileEntity) metaTileEntity).renderMetaTileEntityDynamic(x, y, z, partialTicks);
         }
         if(metaTileEntity != null) {
-            Matrix4 translation = (new Matrix4()).translate(x, y, z);
             List<Tuple<IFastRenderMetaTileEntity, EnumFacing>> coverFast = new ArrayList<>();
             for (EnumFacing side: EnumFacing.VALUES){
                 CoverBehavior cover = metaTileEntity.getCoverAtSide(side);
@@ -48,13 +47,13 @@ public class MetaTileEntityTESR extends TileEntitySpecialRenderer<MetaTileEntity
                 }
             }
             if (coverFast.size() > 0) {
+                Matrix4 translation = (new Matrix4()).translate(x, y, z);
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder buffer = tessellator.getBuffer();
                 this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
                 RenderHelper.disableStandardItemLighting();
                 GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 GlStateManager.enableBlend();
-                GlStateManager.disableCull();
 
                 if (Minecraft.isAmbientOcclusionEnabled()) {
                     GlStateManager.shadeModel(GL11.GL_SMOOTH);
@@ -99,7 +98,7 @@ public class MetaTileEntityTESR extends TileEntitySpecialRenderer<MetaTileEntity
         renderTileEntityFast(te, x, y, z, partialTicks, destroyStage, partialTicks, buffer);
         buffer.setTranslation(0, 0, 0);
         tessellator.draw();
-
+        GlStateManager.enableCull();
         RenderHelper.enableStandardItemLighting();
     }
 
